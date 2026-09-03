@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snapperjack — Nouns, Verbs, Adjectives &amp; Adverbs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF8F2;
+  --paper-deep:#F1EBE0;
+  --ink:#4A4741;
+  --ink-soft:#7C766C;
+  --reed:#A9C4A6;
+  --reed-deep:#6E9070;
+  --reed-wash:#DCE9DA;
+  --rose:#E7C6C2;
+  --rose-deep:#BE8A84;
+  --rose-wash:#F6E6E4;
+  --butter:#F3E2B4;
+  --butter-wash:#FAF2DC;
+  --river:#C6D8E2;
+  --river-wash:#E6EFF4;
+  --lilac:#D8CFE4;
+  --lilac-wash:#EEE9F4;
+  --line:#DED6C8;
+  --radius:18px;
+  --shadow:0 10px 26px -18px rgba(74,71,65,.55);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  background-image:
+    radial-gradient(900px 420px at 12% -6%, var(--river-wash) 0%, transparent 62%),
+    radial-gradient(760px 420px at 92% 4%, var(--rose-wash) 0%, transparent 60%),
+    radial-gradient(1100px 560px at 50% 108%, var(--reed-wash) 0%, transparent 68%);
+  background-attachment:fixed;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:28px 20px 120px}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;align-items:center;gap:18px;margin-bottom:8px;flex-wrap:wrap}
+.tools{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.sizer{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:.78rem;font-weight:500;color:var(--ink-soft);
+  background:rgba(255,255,255,.6);border:1px solid var(--line);
+  padding:6px 14px;border-radius:999px;cursor:pointer;
+}
+.sizer input[type=range]{width:104px;accent-color:var(--reed-deep);cursor:pointer}
+.sizer output{min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+.masthead svg{flex:0 0 auto}
+.masthead h1{
+  font-size:clamp(1.6rem,4.4vw,2.5rem);
+  font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.1;
+}
+.masthead p{margin:.25rem 0 0;color:var(--ink-soft);font-size:.94rem;font-weight:300}
+
+/* ---------- progress ---------- */
+.trail{display:flex;gap:8px;align-items:center;margin:18px 0 22px;flex-wrap:wrap}
+.trail button{
+  font:inherit;font-size:.78rem;font-weight:500;
+  border:1px solid var(--line);background:#fff9;color:var(--ink-soft);
+  padding:6px 12px;border-radius:999px;cursor:pointer;transition:.18s;
+}
+.trail button[data-state="done"]{background:var(--reed-wash);border-color:var(--reed);color:var(--reed-deep)}
+.trail button[data-state="now"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.trail button:disabled{cursor:not-allowed;opacity:.55}
+.trail button:not(:disabled):hover{border-color:var(--ink-soft)}
+
+/* ---------- cards ---------- */
+.card{
+  background:rgba(255,255,255,.72);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:26px 26px 24px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+  backdrop-filter:blur(2px);
+}
+.card h2{margin:0 0 .35rem;font-size:1.35rem;font-weight:600;letter-spacing:-.01em}
+.card h3{margin:1.6rem 0 .5rem;font-size:1rem;font-weight:600}
+.lede{color:var(--ink-soft);margin:0 0 1.1rem;font-weight:300}
+
+.teach{
+  border-left:5px solid var(--tint,var(--reed));
+  background:var(--tint-wash,var(--reed-wash));
+  border-radius:10px;padding:14px 18px;margin-bottom:20px;
+}
+.teach strong{font-weight:600}
+.teach .eg{display:block;margin-top:.4rem;font-size:.92rem;color:var(--ink-soft)}
+.teach .eg em{font-style:italic;font-weight:500;color:var(--ink)}
+
+/* ---------- poem / word chips ---------- */
+.stanza{margin:0 0 1.1rem}
+.line{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px;padding:2px 0}
+.line .indentless{margin-left:0}
+.w{
+  font:inherit;font-size:1.02rem;
+  border:none;background:none;padding:2px 5px;border-radius:8px;
+  color:inherit;cursor:default;
+}
+.w.pick{cursor:pointer;transition:background .14s,box-shadow .14s,transform .14s}
+.w.pick:hover{background:#fff}
+.w.pick:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.w.on{background:var(--butter);box-shadow:inset 0 -2px 0 rgba(0,0,0,.06)}
+.w.right{background:var(--reed);color:#26361f}
+.w.wrong{background:var(--rose);color:#5a2f2b;text-decoration:line-through}
+.w.miss{box-shadow:inset 0 0 0 2px var(--rose-deep);border-radius:8px}
+.punc{opacity:.75}
+
+/* ---------- buttons ---------- */
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.btn{
+  font:inherit;font-weight:500;font-size:.95rem;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  padding:11px 22px;border-radius:999px;cursor:pointer;transition:.18s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.tally{margin-left:auto;font-size:.88rem;color:var(--ink-soft)}
+.listen .spk{font-size:.8em;margin-right:2px;display:inline-block;transform:translateY(-1px)}
+.audionote{margin:.7rem 0 0;font-size:.85rem;color:var(--rose-deep);min-height:1.1em}
+body.hc .audionote{color:#FFE14D}
+
+/* ---------- verdict ---------- */
+.verdict{margin-top:18px;padding:16px 18px;border-radius:12px;background:var(--butter-wash);border:1px solid var(--butter)}
+.verdict p{margin:0}
+.verdict .stars{font-size:1.4rem;letter-spacing:.15em;color:var(--reed-deep)}
+
+/* ---------- sorting ---------- */
+.bank{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:12px;border-radius:12px;background:var(--paper-deep);border:1px dashed var(--line)}
+.tile{
+  font:inherit;font-size:.95rem;border:1px solid var(--line);background:#fff;
+  padding:7px 14px;border-radius:999px;cursor:pointer;transition:.15s;
+}
+.tile:hover{border-color:var(--ink-soft)}
+.tile.held{background:var(--butter);border-color:var(--butter);transform:translateY(-2px)}
+.tile.ok{background:var(--reed);border-color:var(--reed);color:#26361f}
+.tile.no{background:var(--rose);border-color:var(--rose);color:#5a2f2b}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px}
+.bin{border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.6);min-height:120px}
+.bin[data-k="n"]{background:var(--river-wash)}
+.bin[data-k="v"]{background:var(--reed-wash)}
+.bin[data-k="adj"]{background:var(--rose-wash)}
+.bin[data-k="adv"]{background:var(--lilac-wash)}
+.bin h4{margin:0 0 .5rem;font-size:.9rem;font-weight:600}
+.bin .drop{display:flex;flex-wrap:wrap;gap:6px}
+.bin.armed{box-shadow:0 0 0 2px var(--ink)}
+
+/* ---------- quiz ---------- */
+.q{border-top:1px solid var(--line);padding:18px 0 4px}
+.q:first-of-type{border-top:none}
+.q .sent{font-size:1.05rem;margin:0 0 .8rem}
+.q .sent mark{background:var(--butter);padding:2px 7px;border-radius:7px;font-weight:600}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{font:inherit;font-size:.92rem;border:1px solid var(--line);background:#fff;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--ink-soft)}
+.opt.chosen{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.opt.ok{background:var(--reed);border-color:var(--reed);color:#26361f}
+.opt.no{background:var(--rose);border-color:var(--rose);color:#5a2f2b}
+
+/* ---------- certificate ---------- */
+.cert{
+  position:relative;background:#FFFDF8;border-radius:14px;padding:34px 44px 30px;
+  border:1px solid #DED6C8;box-shadow:var(--shadow);overflow:hidden;
+  text-align:center;color:#4A4741;
+}
+.cert::before{
+  content:"";position:absolute;inset:11px;border:2px solid #A9C4A6;
+  border-radius:9px;opacity:.55;pointer-events:none;
+}
+.cert::after{
+  content:"";position:absolute;inset:18px;border:1px solid #BE8A84;
+  border-radius:5px;opacity:.35;pointer-events:none;
+}
+.cert-teeth{position:absolute;left:19px;right:19px;top:19px;height:20px;pointer-events:none}
+.cert-reeds{position:absolute;left:19px;right:19px;bottom:19px;height:104px;pointer-events:none}
+.cert-inner{position:relative;z-index:2}
+.cert .kicker{font-size:12.48px;letter-spacing:.2em;color:#7C766C;font-weight:500;margin:14px 0 0}
+.cert h2{font-size:31.2px;font-weight:600;letter-spacing:-.02em;margin:4.8px 0 17.6px;color:#4A4741}
+.cert .awarded{font-size:12.8px;letter-spacing:.16em;color:#7C766C;margin:0 0 6.4px;font-weight:400}
+.cert .name{
+  font-size:36px;font-weight:500;font-style:italic;color:#6E9070;line-height:1.25;
+  border-bottom:2px solid #A9C4A6;display:inline-block;padding:0 26px 3px;min-width:min(420px,80%);
+}
+.cert .for{margin:17.6px auto 3.2px;max-width:520px;color:#7C766C;font-weight:300;font-size:15.2px}
+.cert .for em{font-style:italic;color:#4A4741}
+
+.medals{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:19.2px auto 0;max-width:660px}
+.medal{
+  border:1px solid rgba(74,71,65,.16);border-radius:12px;padding:7px 15px 8px;
+  min-width:100px;background:#fff;
+}
+.medal b{display:block;font-size:11.36px;font-weight:600;color:#4A4741;margin-bottom:1px}
+.medal span{font-size:14.72px;letter-spacing:.11em;color:#6E9070}
+.medal[data-c="n"]{background:#E6EFF4}
+.medal[data-c="v"]{background:#DCE9DA}
+.medal[data-c="adj"]{background:#F6E6E4}
+.medal[data-c="adv"]{background:#EEE9F4}
+.medal[data-c="sort"]{background:#FAF2DC}
+.medal[data-c="quiz"]{background:#E9F1EC}
+
+.cert .tally-big{margin:18.4px 0 1.6px;font-size:13.6px;color:#7C766C;letter-spacing:.02em}
+.cert .tally-big strong{color:#4A4741;font-weight:600}
+.ribbon{
+  display:inline-block;margin-top:8.8px;background:#A9C4A6;color:#22321C;
+  font-weight:600;font-size:16.32px;padding:8px 30px;position:relative;
+}
+.ribbon::before,.ribbon::after{
+  content:"";position:absolute;top:0;bottom:0;width:15px;background:#A9C4A6;
+}
+.ribbon::before{left:-14px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,55% 50%)}
+.ribbon::after{right:-14px;clip-path:polygon(0 0,100% 0,45% 50%,100% 100%,0 100%)}
+
+.cert .foot{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-top:27.2px;gap:150px;font-size:13.12px;color:#7C766C;
+}
+.cert .foot div{flex:1;border-top:1px solid #DED6C8;padding-top:6px}
+.cert .foot .sign{font-style:italic;color:#6E9070;font-size:15.2px}
+.cert .croc-seal{position:absolute;left:50%;transform:translateX(-50%);bottom:20px;opacity:.92;z-index:3}
+.namefield{
+  font:inherit;font-size:1.05rem;padding:11px 16px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;width:min(340px,100%);
+}
+.namefield:focus{outline:2px solid var(--reed-deep);outline-offset:1px}
+
+.scoretable{width:100%;border-collapse:collapse;margin-top:6px;font-size:.92rem}
+.scoretable td{padding:7px 0;border-bottom:1px dashed var(--line)}
+.scoretable td:last-child{text-align:right;color:var(--reed-deep);letter-spacing:.12em}
+
+.hidden{display:none !important}
+
+/* ---------- responsive ---------- */
+@media(max-width:560px){
+  .wrap{padding:20px 14px 90px}
+  .card{padding:20px 18px}
+  .cert{padding:26px 18px 26px}
+  .cert h2{font-size:22px}
+  .cert .name{font-size:25px;min-width:0;padding:0 12px 3px}
+  .cert .foot{gap:18px;flex-direction:column;align-items:stretch;text-align:left}
+  .cert .foot div{text-align:left !important}
+  .cert .croc-seal{position:static;transform:none;display:block;margin:14px auto 0}
+  .cert-reeds{height:70px}
+  .medal{min-width:88px;padding:6px 11px}
+  .masthead{gap:12px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+
+/* ---------- high contrast ---------- */
+.hc-toggle{
+  font:inherit;font-size:.78rem;font-weight:500;
+  border:1px solid var(--line);background:rgba(255,255,255,.6);color:var(--ink-soft);
+  padding:8px 14px;border-radius:999px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;transition:.18s;
+}
+.hc-toggle:hover{border-color:var(--ink)}
+.hc-toggle .dot{width:11px;height:11px;border-radius:50%;border:1px solid currentColor;background:transparent}
+body.hc .sizer{background:#000;color:#FFE14D;border-color:#FFE14D}
+body.hc .sizer input[type=range]{accent-color:#FFE14D}
+
+body.hc{
+  --paper:#000;--paper-deep:#0D0D0D;--ink:#FFE14D;--ink-soft:#FFE14D;
+  --line:#FFE14D;--shadow:none;
+  background:#000;background-image:none;color:#FFE14D;
+}
+body.hc .card{background:#000;border-color:#FFE14D;backdrop-filter:none}
+body.hc .lede,body.hc .tally,body.hc .teach .eg,body.hc .teach .eg em{color:#FFE14D}
+body.hc .teach{background:#000;border:1px solid #FFE14D;border-left:5px solid #FFE14D}
+body.hc .trail button{background:#000;color:#FFE14D;border-color:#FFE14D}
+body.hc .trail button[data-state="done"]{background:#000;color:#FFE14D;border-style:dashed}
+body.hc .trail button[data-state="now"]{background:#FFE14D;color:#000;border-color:#FFE14D}
+body.hc .hc-toggle{background:#000;color:#FFE14D;border-color:#FFE14D}
+body.hc .hc-toggle .dot{background:#FFE14D}
+body.hc .w.pick:hover{background:#2A2A2A}
+body.hc .w.on{background:#FFE14D;color:#000;box-shadow:none}
+body.hc .w.right{background:#FFE14D;color:#000}
+body.hc .w.wrong{background:#000;color:#FFE14D;box-shadow:inset 0 0 0 2px #FFE14D;text-decoration:line-through}
+body.hc .w.miss{box-shadow:inset 0 0 0 2px #FFE14D;background:#3A3200}
+body.hc .bank{background:#000;border-color:#FFE14D}
+body.hc .tile{background:#000;color:#FFE14D;border-color:#FFE14D}
+body.hc .tile.held,body.hc .tile.ok{background:#FFE14D;color:#000;border-color:#FFE14D}
+body.hc .tile.no{background:#000;color:#FFE14D;border-style:dashed;text-decoration:line-through}
+body.hc .bin[data-k]{background:#000;border-color:#FFE14D}
+body.hc .bin.armed{box-shadow:0 0 0 2px #FFE14D}
+body.hc .opt{background:#000;color:#FFE14D;border-color:#FFE14D}
+body.hc .opt.chosen,body.hc .opt.ok{background:#FFE14D;color:#000;border-color:#FFE14D}
+body.hc .opt.no{background:#000;color:#FFE14D;border-style:dashed;text-decoration:line-through}
+body.hc .q{border-top-color:#FFE14D}
+body.hc .q .sent mark{background:#FFE14D;color:#000}
+body.hc .verdict{background:#000;border-color:#FFE14D}
+body.hc .verdict .stars{color:#FFE14D}
+body.hc .namefield{background:#000;color:#FFE14D;border-color:#FFE14D}
+body.hc .scoretable td,body.hc .scoretable td:last-child{border-bottom-color:#FFE14D;color:#FFE14D}
+body.hc .masthead svg{outline:none}
+
+/* the certificate keeps its own palette, on screen and on paper */
+body.hc #certificate{
+  --paper:#FBF8F2;--paper-deep:#F1EBE0;--ink:#4A4741;--ink-soft:#7C766C;
+  --line:#DED6C8;--reed:#A9C4A6;--reed-deep:#6E9070;--rose-deep:#BE8A84;
+  color:#4A4741;background:#FFFDF8;
+  box-shadow:0 10px 26px -18px rgba(74,71,65,.55);
+}
+body.hc #certificate .rank,body.hc #certificate h2,body.hc #certificate .medal b{color:#4A4741}
+body.hc #certificate .name,body.hc #certificate .medal span,body.hc #certificate .foot .sign{color:#6E9070}
+body.hc #certificate .ribbon{background:#A9C4A6;color:#22321C}
+body.hc #certificate .medal{background:#fff}
+body.hc #certificate .medal[data-c="n"]{background:#E6EFF4}
+body.hc #certificate .medal[data-c="v"]{background:#DCE9DA}
+body.hc #certificate .medal[data-c="adj"]{background:#F6E6E4}
+body.hc #certificate .medal[data-c="adv"]{background:#EEE9F4}
+body.hc #certificate .medal[data-c="sort"]{background:#FAF2DC}
+body.hc #certificate .medal[data-c="quiz"]{background:#E9F1EC}
+
+/* ---------- print ---------- */
+@media print{
+  @page{size:A4 landscape;margin:12mm}
+  body{background:#fff !important;background-image:none !important}
+  body *{visibility:hidden}
+  #certificate,#certificate *{visibility:visible}
+  #certificate{position:absolute;inset:0;margin:0;box-shadow:none;border:none;width:100%}
+  #certificate,#certificate *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #certificate .cert-reeds{height:118px}
+  .noprint{display:none !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <svg width="86" height="62" viewBox="0 0 86 62" aria-hidden="true">
+      <path d="M4 44 C18 40 34 41 52 42 C64 43 76 44 82 46 C74 50 60 52 44 51 C28 50 12 48 4 44Z" fill="#A9C4A6"/>
+      <path d="M8 38 C22 32 40 30 56 32 C68 33.5 78 36 82 39 C70 41 52 40 36 40 C24 40 14 39 8 38Z" fill="#BBD3B6"/>
+      <path d="M20 34 C22 26 30 22 36 25 C40 27 40 32 37 34Z" fill="#A9C4A6"/>
+      <circle cx="31" cy="26" r="5" fill="#FBF8F2"/><circle cx="32" cy="27" r="2.4" fill="#4A4741"/>
+      <path d="M46 40 l3 5 3-5Z M56 40.5 l3 5 3-5Z M66 41.5 l3 4.5 3-4.5Z" fill="#FBF8F2"/>
+      <path d="M50 44.5 l3-4.5 3 4.5Z M60 45.5 l3-4.5 3 4.5Z" fill="#FBF8F2"/>
+    </svg>
+    <div>
+      <h1>Snapperjack</h1>
+      <p>Six levels of nouns, verbs, adjectives and adverbs — hidden in a poem.</p>
+    </div>
+    <div class="tools noprint">
+      <label class="sizer" for="ts">
+        <span>Text size</span>
+        <input type="range" id="ts" min="90" max="170" step="10" value="100">
+        <output id="tsOut">100%</output>
+      </label>
+      <button type="button" class="hc-toggle" id="hc" aria-pressed="false">
+        <span class="dot" aria-hidden="true"></span><span class="lbl">High contrast</span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="trail" id="trail" aria-label="Levels"></nav>
+
+  <main id="stage"></main>
+
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   THE POEM — original, written for this app.
+   Tag key inside square brackets:  n = noun, v = verb,
+   adj = adjective, adv = adverb.  Untagged words are the
+   distractors (articles, pronouns, prepositions...).
+   ========================================================= */
+const POEM = [
+  [ "Beneath the [reeds|n] where [rivers|n] [bend|v],",
+    "Lives [Snapperjack|n], who's no one's [friend|n].",
+    "He [floats|v] there [quietly|adv] all [day|n],",
+    "A [lumpy|adj] [log|n] that [drifts|v] [away|adv]." ],
+
+  [ "His [scaly|adj] [back|n] is [bumpy|adj] [green|adj],",
+    "The [greediest|adj] [grin|n] you've [ever|adv] [seen|v].",
+    "He [waits|v] [politely|adv] by the [school|n]",
+    "And [grins|v] beside the [shallow|adj] [pool|n]." ],
+
+  [ "On [Mondays|n], when the [clock|n] [strikes|v] [three|n],",
+    "He [greedily|adv] [gulps|v] down his [tea|n]:",
+    "A [soggy|adj] [boot|n], a [rusty|adj] [key|n],",
+    "Nine [sandwiches|n], and then... a [knee|n]!" ],
+
+  [ "On [Tuesdays|n] he [politely|adv] [steals|v]",
+    "The [stripy|adj] [socks|n] from [muddy|adj] [heels|n],",
+    "And [crunches|v] [homework|n], [page|n] by [page|n],",
+    "While [grumbling|v] [gently|adv] in a [rage|n]." ],
+
+  [ "So if you [hear|v], along the [hall|n],",
+    "A [slippery|adj] [snuffle|n] by the [wall|n],",
+    "Then [tiptoe|v] [softly|adv], [shut|v] the [door|n],",
+    "And [never|adv] [ever|adv] [ask|v] for more." ],
+
+  [ "For [Snapperjack|n] is [creeping|v] [near|adv]!",
+    "He [grins|v]. He [waits|v]. He's [almost|adv] [here|adv]!",
+    "So [shut|v] your [eyes|n] and [count|v] to [three|n] —",
+    "Then [run|v], my [darlings|n], [follow|v] me!" ]
+];
+
+/* parse "[word|tag]punctuation" into tokens */
+function parseLine(line){
+  return line.split(" ").filter(Boolean).map(chunk=>{
+    const m = chunk.match(/^\[([^\]|]+)\|([a-z]+)\](.*)$/);
+    if(m) return {text:m[1], tag:m[2], tail:m[3]||""};
+    return {text:chunk, tag:null, tail:""};
+  });
+}
+const STANZAS = POEM.map(lines=>lines.map(parseLine));
+
+const KIND = {
+  n:   {label:"Noun",      plural:"nouns",      tint:"var(--river)", wash:"var(--river-wash)"},
+  v:   {label:"Verb",      plural:"verbs",      tint:"var(--reed)",  wash:"var(--reed-wash)"},
+  adj: {label:"Adjective", plural:"adjectives", tint:"var(--rose)",  wash:"var(--rose-wash)"},
+  adv: {label:"Adverb",    plural:"adverbs",    tint:"var(--lilac)", wash:"var(--lilac-wash)"}
+};
+
+/* ---------- level definitions ---------- */
+const LEVELS = [
+  { id:1, type:"find", target:"n", stanzas:[0,1], short:"1 · Nouns",
+    title:"Level 1 — Hunt the nouns",
+    teach:"A <strong>noun</strong> names something: a person, a place, a thing, an animal or an idea. If you can put <em>a</em>, <em>the</em> or <em>my</em> in front of it, it is very likely a noun.",
+    egs:"the <em>reeds</em> · a <em>log</em> · <em>Snapperjack</em> · the <em>school</em>",
+    ask:"Tap every noun in these two verses. Careful — some words are wearing a disguise." },
+
+  { id:2, type:"find", target:"v", stanzas:[0,5], short:"2 · Verbs",
+    title:"Level 2 — Hunt the verbs",
+    teach:"A <strong>verb</strong> is what somebody or something <em>does</em>, or what is happening. Try putting <em>he</em> or <em>they</em> in front of the word — if it makes sense, you have found a verb.",
+    egs:"he <em>floats</em> · it <em>drifts</em> · he <em>grins</em> · they <em>run</em>",
+    ask:"Tap every verb. Watch out for words like <em>grin</em>, which can be a noun in one line and a verb in another." },
+
+  { id:3, type:"find", target:"adj", stanzas:[1,3], short:"3 · Adjectives",
+    title:"Level 3 — Hunt the adjectives",
+    teach:"An <strong>adjective</strong> describes a noun. It tells you which one, what sort, or what it is like. Adjectives usually sit just before the noun they describe.",
+    egs:"<em>scaly</em> back · <em>muddy</em> heels · <em>stripy</em> socks",
+    ask:"Tap every adjective. Each one is doing a job for a noun somewhere nearby." },
+
+  { id:4, type:"find", target:"adv", stanzas:[3,4], short:"4 · Adverbs",
+    title:"Level 4 — Hunt the adverbs",
+    teach:"An <strong>adverb</strong> tells you more about a verb: <em>how</em>, <em>when</em>, or <em>how often</em> something happens. Lots of them end in <em>-ly</em>, but not all of them do.",
+    egs:"steals <em>politely</em> · tiptoe <em>softly</em> · <em>never</em> ask",
+    ask:"Tap every adverb. Two of them in the last verse do not end in -ly." },
+
+  { id:5, type:"sort", short:"5 · Sorting",
+    title:"Level 5 — Sort Snapperjack's hoard",
+    teach:"Now all four word classes are jumbled together. A word does not belong to one class forever — its job in the sentence decides.",
+    ask:"Tap a word, then tap the pond it belongs in. Tap a word already in a pond to send it back." },
+
+  { id:6, type:"quiz", short:"6 · In context",
+    title:"Level 6 — Name that word",
+    teach:"The hardest test: one word is highlighted in each line. What job is it doing <em>in that line</em>?",
+    ask:"Choose the word class for each highlighted word." }
+];
+
+const SORT_WORDS = [
+  {w:"snuffle",tag:"n"},   {w:"crunches",tag:"v"},  {w:"slippery",tag:"adj"}, {w:"gently",tag:"adv"},
+  {w:"homework",tag:"n"},  {w:"tiptoe",tag:"v"},    {w:"rusty",tag:"adj"},    {w:"greedily",tag:"adv"},
+  {w:"darlings",tag:"n"},  {w:"gulps",tag:"v"},     {w:"greediest",tag:"adj"},{w:"almost",tag:"adv"},
+  {w:"rage",tag:"n"},      {w:"creeping",tag:"v"},  {w:"shallow",tag:"adj"},  {w:"never",tag:"adv"}
+];
+
+const QUIZ = [
+  {before:"He floats there ", word:"quietly", after:" all day.", ans:"adv"},
+  {before:"A ", word:"lumpy", after:" log that drifts away.", ans:"adj"},
+  {before:"Lives ", word:"Snapperjack", after:", who's no one's friend.", ans:"n"},
+  {before:"And ", word:"crunches", after:" homework, page by page.", ans:"v"},
+  {before:"The greediest ", word:"grin", after:" you've ever seen.", ans:"n"},
+  {before:"And he ", word:"grins", after:" beside the shallow pool.", ans:"v"},
+  {before:"A slippery snuffle by the ", word:"wall", after:".", ans:"n"},
+  {before:"He grins. He waits. He's ", word:"almost", after:" here!", ans:"adv"}
+];
+
+/* ---------- state ---------- */
+const state = { level:0, results:{}, name:"", hc:false, ts:100 };
+const STORE = "snapperjack.v1";
+
+function save(){
+  try{ localStorage.setItem(STORE, JSON.stringify({results:state.results, name:state.name, hc:state.hc, ts:state.ts})); }
+  catch(e){ /* storage unavailable — play on without it */ }
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE);
+    if(raw){
+      const d = JSON.parse(raw);
+      state.results = d.results||{}; state.name = d.name||""; state.hc = !!d.hc;
+      state.ts = Math.min(170, Math.max(90, Number(d.ts)||100));
+    }
+  }catch(e){}
+}
+
+/* ---------- high contrast ---------- */
+const hcBtn = document.getElementById("hc");
+function applyHC(){
+  document.body.classList.toggle("hc", state.hc);
+  hcBtn.setAttribute("aria-pressed", state.hc ? "true" : "false");
+  hcBtn.querySelector(".lbl").textContent = state.hc ? "Normal colours" : "High contrast";
+}
+hcBtn.addEventListener("click", ()=>{ state.hc = !state.hc; applyHC(); save(); });
+
+/* ---------- text size ---------- */
+const tsIn = document.getElementById("ts");
+const tsOut = document.getElementById("tsOut");
+function applyTS(){
+  document.documentElement.style.fontSize = (16 * state.ts / 100) + "px";
+  tsIn.value = state.ts;
+  tsOut.textContent = state.ts + "%";
+}
+tsIn.addEventListener("input", ()=>{ state.ts = Number(tsIn.value); applyTS(); });
+tsIn.addEventListener("change", save);
+
+function stars(pct){ return pct>=.9 ? 3 : pct>=.7 ? 2 : pct>=.45 ? 1 : 0; }
+function starGlyphs(k){ return "★★★".slice(0,k) + "☆☆☆".slice(0,3-k); }
+function totalStars(){ return Object.values(state.results).reduce((a,r)=>a+r.stars,0); }
+function levelsDone(){ return Object.keys(state.results).length; }
+
+/* ---------- shell ---------- */
+const stage = document.getElementById("stage");
+const trail = document.getElementById("trail");
+
+function drawTrail(){
+  trail.innerHTML = "";
+  LEVELS.forEach((L,i)=>{
+    const b = document.createElement("button");
+    const r = state.results[L.id];
+    b.textContent = r ? L.short + " " + starGlyphs(r.stars).slice(0,r.stars || 0) : L.short;
+    b.dataset.state = i===state.level ? "now" : (r ? "done" : "todo");
+    b.onclick = ()=>{ state.level=i; render(); };
+    trail.appendChild(b);
+  });
+  const c = document.createElement("button");
+  c.textContent = "Certificate";
+  c.disabled = levelsDone() < LEVELS.length;
+  c.dataset.state = state.level==="cert" ? "now" : "todo";
+  c.onclick = ()=>{ state.level="cert"; render(); };
+  trail.appendChild(c);
+}
+
+function el(tag, cls, html){
+  const e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(html!=null) e.innerHTML = html;
+  return e;
+}
+
+function teachBlock(L, tint, wash){
+  const t = el("div","teach", L.teach + (L.egs ? '<span class="eg">'+L.egs+'</span>' : ""));
+  if(tint){ t.style.setProperty("--tint",tint); t.style.setProperty("--tint-wash",wash); }
+  return t;
+}
+
+function record(id, pct){
+  const s = stars(pct);
+  const prev = state.results[id];
+  if(!prev || pct > prev.pct) state.results[id] = {pct:pct, stars:s};
+  save();
+  drawTrail();
+  return s;
+}
+
+function afterBlock(container, pct, msg, retry){
+  const v = el("div","verdict");
+  v.innerHTML = '<div class="stars">'+starGlyphs(stars(pct))+'</div><p>'+msg+'</p>';
+  const row = el("div","row");
+  const again = el("button","btn ghost","Try this level again");
+  again.onclick = retry;
+  row.appendChild(again);
+  if(state.level < LEVELS.length-1){
+    const next = el("button","btn","Next level →");
+    next.onclick = ()=>{ state.level++; render(); window.scrollTo({top:0,behavior:"smooth"}); };
+    row.appendChild(next);
+  }else if(levelsDone() >= LEVELS.length){
+    const cert = el("button","btn","Collect your certificate");
+    cert.onclick = ()=>{ state.level="cert"; render(); window.scrollTo({top:0,behavior:"smooth"}); };
+    row.appendChild(cert);
+  }
+  v.appendChild(row);
+  container.appendChild(v);
+  v.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+
+/* ---------- level type: find ---------- */
+function renderFind(L){
+  const K = KIND[L.target];
+  const card = el("section","card");
+  card.appendChild(el("h2",null,L.title));
+  card.appendChild(el("p","lede",L.ask));
+  card.appendChild(teachBlock(L, K.tint, K.wash));
+
+  const chips = [];
+  L.stanzas.forEach(si=>{
+    const st = el("div","stanza");
+    STANZAS[si].forEach(line=>{
+      const ln = el("div","line");
+      line.forEach(tok=>{
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "w pick";
+        b.textContent = tok.text;
+        b.setAttribute("aria-pressed","false");
+        b.dataset.tag = tok.tag || "";
+        b.onclick = ()=>{
+          if(card.dataset.checked) return;
+          b.classList.toggle("on");
+          b.setAttribute("aria-pressed", b.classList.contains("on") ? "true":"false");
+          count();
+        };
+        chips.push(b);
+        ln.appendChild(b);
+        if(tok.tail){ const p = el("span","punc",tok.tail); ln.appendChild(p); }
+      });
+      st.appendChild(ln);
+    });
+    card.appendChild(st);
+  });
+
+  const total = chips.filter(c=>c.dataset.tag===L.target).length;
+  const row = el("div","row");
+  const check = el("button","btn","Check my "+K.plural);
+  const tally = el("span","tally","0 of "+total+" chosen");
+  function count(){
+    const n = chips.filter(c=>c.classList.contains("on")).length;
+    tally.textContent = n+" of "+total+" chosen";
+  }
+  check.onclick = ()=>{
+    card.dataset.checked = "1";
+    let hit=0, mis=0;
+    chips.forEach(c=>{
+      const isTarget = c.dataset.tag === L.target;
+      const picked = c.classList.contains("on");
+      c.classList.remove("pick","on");
+      if(picked && isTarget){ c.classList.add("right"); hit++; }
+      else if(picked && !isTarget){ c.classList.add("wrong"); mis++; }
+      else if(!picked && isTarget){ c.classList.add("miss"); }
+    });
+    const pct = Math.max(0,(hit-mis))/total;
+    check.disabled = true;
+    let msg = "You found <strong>"+hit+" of "+total+"</strong> "+K.plural.toLowerCase()+".";
+    if(mis) msg += " You also caught "+mis+" word"+(mis===1?"":"s")+" that "+(mis===1?"was":"were")+" doing a different job — those are crossed out.";
+    const missed = total-hit;
+    if(missed) msg += " The "+missed+" outlined in pink slipped past you.";
+    if(!mis && !missed) msg += " Not one escaped.";
+    record(L.id, pct);
+    afterBlock(card, pct, msg, ()=>render());
+  };
+  row.appendChild(check);
+  row.appendChild(tally);
+  card.appendChild(row);
+  stage.appendChild(card);
+}
+
+/* ---------- level type: sort ---------- */
+function renderSort(L){
+  const card = el("section","card");
+  card.appendChild(el("h2",null,L.title));
+  card.appendChild(el("p","lede",L.ask));
+  card.appendChild(teachBlock(L));
+
+  const pool = SORT_WORDS.slice().sort(()=>Math.random()-.5);
+  const bank = el("div","bank");
+  let held = null;
+  const bins = {};
+
+  function makeTile(item){
+    const t = el("button","tile",item.w);
+    t.type="button";
+    t.dataset.tag = item.tag;
+    t.onclick = ()=>{
+      if(card.dataset.checked) return;
+      if(t.parentElement !== bank){ bank.appendChild(t); t.classList.remove("held"); held=null; armBins(false); return; }
+      if(held===t){ t.classList.remove("held"); held=null; armBins(false); return; }
+      if(held) held.classList.remove("held");
+      held = t; t.classList.add("held"); armBins(true);
+    };
+    return t;
+  }
+  pool.forEach(item=> bank.appendChild(makeTile(item)));
+  card.appendChild(bank);
+
+  const grid = el("div","bins");
+  ["n","v","adj","adv"].forEach(k=>{
+    const b = el("div","bin");
+    b.dataset.k = k;
+    b.appendChild(el("h4",null,KIND[k].label+"s"));
+    const drop = el("div","drop");
+    b.appendChild(drop);
+    bins[k] = drop;
+    b.onclick = ()=>{
+      if(card.dataset.checked || !held) return;
+      drop.appendChild(held);
+      held.classList.remove("held");
+      held = null; armBins(false); count();
+    };
+    grid.appendChild(b);
+  });
+  card.appendChild(grid);
+  function armBins(on){ grid.querySelectorAll(".bin").forEach(b=>b.classList.toggle("armed",on)); }
+
+  const row = el("div","row");
+  const check = el("button","btn","Check the ponds");
+  const tally = el("span","tally","0 of 16 sorted");
+  function count(){
+    const left = bank.querySelectorAll(".tile").length;
+    tally.textContent = (16-left)+" of 16 sorted";
+    check.disabled = left>0;
+  }
+  check.disabled = true;
+  check.onclick = ()=>{
+    card.dataset.checked="1";
+    let hit=0;
+    Object.keys(bins).forEach(k=>{
+      bins[k].querySelectorAll(".tile").forEach(t=>{
+        if(t.dataset.tag===k){ t.classList.add("ok"); hit++; } else { t.classList.add("no"); }
+      });
+    });
+    const pct = hit/SORT_WORDS.length;
+    check.disabled = true;
+    const msg = "<strong>"+hit+" of 16</strong> landed in the right pond. Green words are home; pink ones belong somewhere else.";
+    record(L.id,pct);
+    afterBlock(card,pct,msg,()=>render());
+  };
+  row.appendChild(check); row.appendChild(tally);
+  card.appendChild(row);
+  stage.appendChild(card);
+}
+
+/* ---------- level type: quiz ---------- */
+function renderQuiz(L){
+  const card = el("section","card");
+  card.appendChild(el("h2",null,L.title));
+  card.appendChild(el("p","lede",L.ask));
+  card.appendChild(teachBlock(L));
+
+  const picks = new Array(QUIZ.length).fill(null);
+  QUIZ.forEach((q,i)=>{
+    const box = el("div","q");
+    box.appendChild(el("p","sent", q.before+"<mark>"+q.word+"</mark>"+q.after));
+    const opts = el("div","opts");
+    ["n","v","adj","adv"].forEach(k=>{
+      const o = el("button","opt",KIND[k].label);
+      o.type="button"; o.dataset.k=k;
+      o.onclick = ()=>{
+        if(card.dataset.checked) return;
+        opts.querySelectorAll(".opt").forEach(x=>x.classList.remove("chosen"));
+        o.classList.add("chosen");
+        picks[i]=k; count();
+      };
+      opts.appendChild(o);
+    });
+    box.appendChild(opts);
+    card.appendChild(box);
+  });
+
+  const row = el("div","row");
+  const check = el("button","btn","Check my answers");
+  const tally = el("span","tally","0 of "+QUIZ.length+" answered");
+  check.disabled = true;
+  function count(){
+    const n = picks.filter(Boolean).length;
+    tally.textContent = n+" of "+QUIZ.length+" answered";
+    check.disabled = n < QUIZ.length;
+  }
+  check.onclick = ()=>{
+    card.dataset.checked="1";
+    let hit=0;
+    card.querySelectorAll(".q").forEach((box,i)=>{
+      box.querySelectorAll(".opt").forEach(o=>{
+        if(o.dataset.k===QUIZ[i].ans) o.classList.add("ok");
+        else if(o.dataset.k===picks[i]) o.classList.add("no");
+        o.classList.remove("chosen");
+      });
+      if(picks[i]===QUIZ[i].ans) hit++;
+    });
+    const pct = hit/QUIZ.length;
+    check.disabled=true;
+    record(L.id,pct);
+    afterBlock(card,pct,"<strong>"+hit+" of "+QUIZ.length+"</strong> correct. The green answer is the right one in every line.",()=>render());
+  };
+  row.appendChild(check); row.appendChild(tally);
+  card.appendChild(row);
+  stage.appendChild(card);
+}
+
+/* ---------- certificate ---------- */
+function rankFor(s){
+  if(s>=17) return "Keeper of the Word Classes";
+  if(s>=14) return "Master Croc-Wrangler";
+  if(s>=10) return "Riverbank Word Hunter";
+  if(s>=6)  return "Apprentice Reed-Watcher";
+  return "Brave Beginner";
+}
+
+function renderCert(){
+  const s = totalStars();
+  const setup = el("section","card noprint");
+  setup.appendChild(el("h2",null,"Your certificate"));
+  setup.appendChild(el("p","lede","Type your name, then save it as a PDF. In the print window choose <strong>Save as PDF</strong> as the destination — landscape A4 works best."));
+
+  const input = document.createElement("input");
+  input.className = "namefield";
+  input.type = "text";
+  input.placeholder = "Your name";
+  input.value = state.name;
+  input.maxLength = 34;
+
+  const table = el("table","scoretable");
+  LEVELS.forEach(L=>{
+    const r = state.results[L.id];
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td>"+L.short.replace(/^\d+ · /,"")+"</td><td>"+(r?starGlyphs(r.stars):"—")+"</td>";
+    table.appendChild(tr);
+  });
+  setup.appendChild(el("h3",null,"How you went"));
+  setup.appendChild(table);
+
+  const row = el("div","row");
+  row.appendChild(input);
+  const print = el("button","btn","Save as PDF");
+  print.onclick = ()=>{ paint(); window.print(); };
+  const back = el("button","btn ghost","Back to the levels");
+  back.onclick = ()=>{ state.level=0; render(); };
+  row.appendChild(print); row.appendChild(back);
+  setup.appendChild(row);
+  stage.appendChild(setup);
+
+  const cert = el("section","cert");
+  cert.id = "certificate";
+
+  const teeth = [];
+  for(let i=0;i<26;i++){
+    const x = i*(1000/26);
+    teeth.push('<polygon points="'+x+',0 '+(x+38.4)+',0 '+(x+19.2)+',26" fill="#DCE9DA"/>');
+  }
+
+  const medalMap = {1:"n",2:"v",3:"adj",4:"adv",5:"sort",6:"quiz"};
+  const medals = LEVELS.map(L=>{
+    const r = state.results[L.id];
+    const label = L.short.replace(/^\d+ · /,"");
+    return '<div class="medal" data-c="'+medalMap[L.id]+'"><b>'+label+'</b>'+
+           '<span>'+(r?starGlyphs(r.stars):"☆☆☆")+'</span></div>';
+  }).join("");
+
+  cert.innerHTML =
+    '<svg class="cert-teeth" viewBox="0 0 1000 26" preserveAspectRatio="none" aria-hidden="true">'+teeth.join("")+'</svg>'+
+    '<svg class="cert-reeds" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">'+
+      '<path d="M0 96 C120 86 200 104 320 96 C440 88 520 104 640 97 C760 90 880 103 1000 95 L1000 120 L0 120Z" fill="#E6EFF4"/>'+
+      '<path d="M0 108 C140 100 240 114 380 107 C520 100 640 113 780 106 C880 101 940 108 1000 105 L1000 120 L0 120Z" fill="#DCE9DA"/>'+
+      '<g stroke="#A9C4A6" stroke-width="3" fill="none" opacity=".8">'+
+        '<path d="M48 100 C44 76 52 58 60 44"/><path d="M70 101 C68 82 74 66 84 54"/>'+
+        '<path d="M92 102 C92 84 96 70 104 60"/>'+
+        '<path d="M906 100 C910 76 902 58 894 44"/><path d="M884 101 C886 82 880 66 870 54"/>'+
+        '<path d="M862 102 C862 84 858 70 850 60"/>'+
+      '</g>'+
+      '<g fill="#CBDFC7">'+
+        '<ellipse cx="60" cy="42" rx="6" ry="13"/><ellipse cx="84" cy="52" rx="5" ry="11"/>'+
+        '<ellipse cx="894" cy="42" rx="6" ry="13"/><ellipse cx="870" cy="52" rx="5" ry="11"/>'+
+      '</g>'+
+    '</svg>'+
+    '<div class="cert-inner">'+
+      '<p class="kicker">Snapperjack&rsquo;s Riverbank Academy</p>'+
+      '<h2>Certificate of Word Class Mastery</h2>'+
+      '<p class="awarded">This is awarded to</p>'+
+      '<div class="name" id="certName">'+(state.name||"Your name")+'</div>'+
+      '<p class="for">who hunted down every noun, verb, adjective and adverb hiding in the poem <em>Snapperjack</em>, and escaped the crocodile intact.</p>'+
+      '<div class="medals">'+medals+'</div>'+
+      '<p class="tally-big"><strong>'+s+' of 18 stars</strong> earned across six levels</p>'+
+      '<p><span class="ribbon">'+rankFor(s)+'</span></p>'+
+      '<div class="foot">'+
+        '<div>Awarded '+new Date().toLocaleDateString("en-AU",{day:"numeric",month:"long",year:"numeric"})+'</div>'+
+        '<div style="text-align:right" class="sign">Signed, Snapperjack</div>'+
+      '</div>'+
+    '</div>'+
+    '<svg class="croc-seal" width="104" height="66" viewBox="0 0 96 62" aria-hidden="true">'+
+      '<path d="M6 46 C22 42 40 43 58 44 C70 45 84 46 92 48 C82 53 66 55 48 54 C30 53 14 50 6 46Z" fill="#A9C4A6" opacity=".85"/>'+
+      '<path d="M10 40 C26 34 44 32 60 34 C72 35.5 84 38 90 41 C76 43 56 42 40 42 C28 42 16 41 10 40Z" fill="#CBDFC7"/>'+
+      '<path d="M24 36 C26 27 34 23 41 26 C45 28 45 34 42 36Z" fill="#A9C4A6"/>'+
+      '<circle cx="35" cy="27.5" r="4.6" fill="#FFFDF8"/><circle cx="36" cy="28.5" r="2.2" fill="#4A4741"/>'+
+      '<path d="M52 42 l3 5 3-5Z M64 43 l3 5 3-5Z M76 44 l3 4.5 3-4.5Z" fill="#FFFDF8"/>'+
+    '</svg>';
+  stage.appendChild(cert);
+
+  function paint(){
+    state.name = input.value.trim();
+    save();
+    document.getElementById("certName").textContent = state.name || "Your name";
+  }
+  input.addEventListener("input", paint);
+}
+
+/* ---------- intro ---------- */
+function renderIntro(){
+  const c = el("section","card");
+  c.appendChild(el("h2",null,"Meet Snapperjack"));
+  c.appendChild(el("p","lede","Read the poem first, then hunt through it six times — once for each kind of word."));
+  const box = el("div","teach","Every word in a sentence has a job. <strong>Nouns</strong> name things, <strong>verbs</strong> do things, <strong>adjectives</strong> describe nouns, and <strong>adverbs</strong> describe verbs. The same word can change jobs from one line to the next, which is exactly how Snapperjack likes it.");
+  c.appendChild(box);
+  STANZAS.forEach(st=>{
+    const s = el("div","stanza");
+    st.forEach(line=>{
+      const ln = el("div","line");
+      line.forEach(tok=>{
+        ln.appendChild(el("span","w",tok.text));
+        if(tok.tail) ln.appendChild(el("span","punc",tok.tail));
+      });
+      s.appendChild(ln);
+    });
+    c.appendChild(s);
+  });
+  const row = el("div","row");
+
+  const listen = el("button","btn ghost listen",'<span class="spk" aria-hidden="true">▶</span> Listen to the poem');
+  const note = el("p","audionote","");
+  poemAudio = new Audio("listen1.mp3");
+  poemAudio.preload = "none";
+  function label(playing){
+    listen.innerHTML = playing
+      ? '<span class="spk" aria-hidden="true">❚❚</span> Pause'
+      : '<span class="spk" aria-hidden="true">▶</span> Listen to the poem';
+  }
+  listen.onclick = ()=>{
+    if(poemAudio.paused){
+      poemAudio.play().then(()=>label(true)).catch(()=>{
+        note.textContent = "Audio file not found — check listen1.mp3 sits beside this page.";
+      });
+    }else{
+      poemAudio.pause(); label(false);
+    }
+  };
+  poemAudio.addEventListener("ended", ()=>{ label(false); poemAudio.currentTime = 0; });
+  poemAudio.addEventListener("pause", ()=>label(false));
+  poemAudio.addEventListener("error", ()=>{
+    note.textContent = "Audio file not found — check listen1.mp3 sits beside this page.";
+  });
+  row.appendChild(listen);
+
+  const go = el("button","btn","Start Level 1 →");
+  go.onclick = ()=>{ state.level=0; render(); window.scrollTo({top:0,behavior:"smooth"}); };
+  row.appendChild(go);
+  c.appendChild(row);
+  c.appendChild(note);
+  stage.appendChild(c);
+}
+
+/* ---------- router ---------- */
+let introShown = false;
+let poemAudio = null;
+function render(){
+  if(poemAudio){ poemAudio.pause(); poemAudio = null; }
+  stage.innerHTML = "";
+  drawTrail();
+  if(state.level === "cert"){ renderCert(); return; }
+  if(!introShown){ introShown = true; renderIntro(); return; }
+  const L = LEVELS[state.level];
+  if(L.type==="find") renderFind(L);
+  else if(L.type==="sort") renderSort(L);
+  else renderQuiz(L);
+}
+
+load();
+applyHC();
+applyTS();
+render();
+</script>
+</body>
+</html>
